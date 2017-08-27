@@ -23,6 +23,7 @@ var step = function() {
 
 var update = function() {
   player_one.update();
+  player_two.update();
   ball.update(player_one.paddle, player_two.paddle);
 };
 
@@ -51,6 +52,22 @@ Paddle.prototype.render = function() {
   context.fillStyle = "#FFF";
   context.fillRect(this.x, this.y, this.width, this.height);
 };
+
+
+Paddle.prototype.move = function(x, y) {
+  this.x += x;
+  this.y += y;
+  this.x_speed = x;
+  this.y_speed = y;
+  if (this.y < 0) {
+    this.y = 0;
+    this.y_speed = 0;
+  } else if (this.y + this.height > 400) {
+    this.y = 400 - this.height;
+    this.y_speed = 0;
+  }
+}
+
 
 function Ball(x, y) {
   this.x = x;
@@ -92,7 +109,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
   }
 
   if (this.x < 400) {
-    if (top_x < (paddle1.x + paddle1.width) && top_y < paddle1.x && bottom_x > (paddle1.x + paddle1.width) && bottom_y > (paddle1.y + paddle1.height)) {
+    if (bottom_y < paddle1.y && top_y > (paddle1.y + paddle1.height) && bottom_x < (paddle1.x + paddle1.weight) && top_x > (paddle1.x + paddle1.weight) ) {
       this.x_speed = 6;
       this.y_speed += (paddle1.y_speed / 2);
       this.x += this.x_speed;
@@ -103,7 +120,8 @@ Ball.prototype.update = function(paddle1, paddle2) {
       this.y_speed += (paddle2.y_speed / 2);
       this.x += this.x_speed;
     }
-  } 
+  }
+
  };
 
 function PlayerOne() {
@@ -127,21 +145,6 @@ PlayerOne.prototype.update = function() {
   }
 };
 
-
-Paddle.prototype.move = function(x, y) {
-  this.x += x;
-  this.y += y;
-  this.x_speed = x;
-  this.y_speed = y;
-  if (this.y < 0) {
-    this.y = 0;
-    this.y_speed = 0;
-  } else if (this.y + this.height > 400) {
-    this.y = 400 - this.height;
-    this.y_speed = 0;
-  }
-}
-
 function PlayerTwo() {
   this.paddle = new Paddle(783, 180, 7, 60);
 }
@@ -150,12 +153,12 @@ PlayerTwo.prototype.render = function() {
   this.paddle.render();
 }
 
-PLayerTwo.prototype.update = function() {
+PlayerTwo.prototype.update = function() {
   for(var key in keysDown) {
     var value = Number(key);
-    if(value == 40) {
+    if(value == 38) {
       this.paddle.move(0, -5);
-    } else if (value == 38) {
+    } else if (value == 40) {
       this.paddle.move(0, 5);
     } else {
       this.paddle.move(0, 0);
