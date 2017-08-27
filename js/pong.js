@@ -74,7 +74,7 @@ function Ball(x, y) {
   this.y = y;
   this.x_speed = 8;
   this.y_speed = 7;
-  this.radius = 2.5;
+  this.radius = 5;
 }
 
 Ball.prototype.render = function() {
@@ -109,13 +109,13 @@ Ball.prototype.update = function(paddle1, paddle2) {
   }
 
   if (this.x < 400) {
-    if (bottom_y < paddle1.y && top_y > (paddle1.y + paddle1.height) && bottom_x < (paddle1.x + paddle1.weight) && top_x > (paddle1.x + paddle1.weight) ) {
+    if (this.x > paddle1.x && this.x < (paddle1.x + paddle1.width) && this.y < (paddle1.y + paddle1.height) && this.y > paddle1.y) {
       this.x_speed = 6;
       this.y_speed += (paddle1.y_speed / 2);
       this.x += this.x_speed;
     }
   } else {
-    if (top_y < paddle2.y && bottom_y > (paddle2.y + paddle2.height) && top_x < paddle2.x && bottom_x > paddle2.x) {
+    if (this.x > paddle2.x && this.x < (paddle2.x + paddle2.width) && this.y < (paddle2.y + paddle2.height) && this.y > paddle2.y) {
       this.x_speed = -6;
       this.y_speed += (paddle2.y_speed / 2);
       this.x += this.x_speed;
