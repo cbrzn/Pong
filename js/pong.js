@@ -9,6 +9,8 @@ var height = 400;
 canvas.height = height;
 canvas.width = width;
 var context = canvas.getContext('2d');
+var points_p1 = 0;
+var points_p2 = 0;
 
 window.onload = function() {
   document.body.appendChild(canvas);
@@ -30,6 +32,7 @@ var update = function() {
 var player_one = new PlayerOne(); 
 var player_two = new PlayerTwo();
 var ball = new Ball(400, 200);
+var score = new Score();
 
 var render = function() {
   context.fillStyle = "#000";
@@ -37,6 +40,7 @@ var render = function() {
   player_one.render();
   player_two.render();
   ball.render();
+  score.render();
 };
 
 function Paddle(x, y, width, height) {
@@ -101,11 +105,20 @@ Ball.prototype.update = function(paddle1, paddle2) {
   }
 
 
-  if(this.x < 0 || this.x > 800) {
-    this.x_speed = -5;
-    this.y_speed = 0;
+  if(this.x < 0) {
+    this.x_speed = Math.random() / 2 + 8;
+    this.y_speed = Math.random() / 2 + 8;
     this.x = 400;
     this.y = 200;
+    points_p2++;
+  }
+
+  if(this.x > 800) {
+    this.x_speed = Math.random() / 2 - 8;
+    this.y_speed = Math.random() / 2 - 8;
+    this.x = 400;
+    this.y = 200;
+    points_p1++;
   }
 
   if (this.x < 400) {
@@ -122,6 +135,11 @@ Ball.prototype.update = function(paddle1, paddle2) {
     }
   }
 
+    if (points_p1 == 10 || points_p2 == 10) {
+      points_p1 = 0;
+      points_p2 = 0;
+    }
+
  };
 
 function PlayerOne() {
@@ -136,9 +154,9 @@ PlayerOne.prototype.update = function() {
   for(var key in keysDown) {
     var value = Number(key);
     if(value == 87) {
-      this.paddle.move(0, -5);
+      this.paddle.move(0, -8);
     } else if (value == 83) {
-      this.paddle.move(0, 5);
+      this.paddle.move(0, 8);
     } else {
       this.paddle.move(0, 0);
     }
@@ -157,13 +175,25 @@ PlayerTwo.prototype.update = function() {
   for(var key in keysDown) {
     var value = Number(key);
     if(value == 38) {
-      this.paddle.move(0, -5);
+      this.paddle.move(0, -8);
     } else if (value == 40) {
-      this.paddle.move(0, 5);
+      this.paddle.move(0, 8);
     } else {
       this.paddle.move(0, 0);
     }
   }
+};
+
+function Score() {
+
+}
+
+Score.prototype.render = function() {
+    context.font = "16px Arial";
+    context.fillStyle = "#FFF";
+    context.fillText("P1 SCORE: "+ points_p1, 8, 20);
+    context.fillText("P2 SCORE: "+ points_p2, 690, 20);
+
 };
 
 var keysDown = {};
